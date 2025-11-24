@@ -190,32 +190,6 @@
             line-height: 1.6;
         }
 
-        .dns-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .dns-table th,
-        .dns-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .dns-table th {
-            background: #667eea;
-            color: white;
-            font-weight: 600;
-        }
-
-        .dns-table tr:hover {
-            background: #e8eaf6;
-        }
-
         .badge {
             display: inline-block;
             background: #667eea;
@@ -299,15 +273,6 @@
             .info-grid {
                 grid-template-columns: 1fr;
             }
-
-            .dns-table {
-                font-size: 0.85em;
-            }
-
-            .dns-table th,
-            .dns-table td {
-                padding: 8px;
-            }
         }
 
         .server-icon {
@@ -368,10 +333,6 @@
                             <span class="info-label">Alternative:</span>
                             <span class="info-value">OPNsense</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Weitere Option:</span>
-                            <span class="info-value">Windows 11</span>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -395,10 +356,6 @@
                             <span class="info-label">Gateway:</span>
                             <span class="info-value">192.168.4.1</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Nameserver:</span>
-                            <span class="info-value">192.168.4.1</span>
-                        </div>
                     </div>
 
                     <div class="info-card">
@@ -411,73 +368,7 @@
                             <span class="info-label">Firewall:</span>
                             <span class="info-value">2001:7c7:1906:104::4:45/64</span>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Gateway:</span>
-                            <span class="info-value">2001:7c7:1906:104::1</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Nameserver:</span>
-                            <span class="info-value">2001:7c7:1906:104::1</span>
-                        </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- DNS Konfiguration -->
-            <section class="section">
-                <h2>🌍 DNS-Einträge</h2>
-                <div class="info-card">
-                    <h3>DNS Server: fs2B1.r414.hhs.karlsruhe.de</h3>
-                    <p style="color: #666; margin-bottom: 15px;">$ORIGIN fs2B1.r414.hhs.karlsruhe.de. | $TTL 3600</p>
-                    
-                    <table class="dns-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>TTL</th>
-                                <th>Typ</th>
-                                <th>Wert</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>@</td>
-                                <td>-</td>
-                                <td>IN A</td>
-                                <td>192.168.4.45</td>
-                            </tr>
-                            <tr>
-                                <td>@</td>
-                                <td>-</td>
-                                <td>IN AAAA</td>
-                                <td>2001:7c7:1906:104::4:45</td>
-                            </tr>
-                            <tr>
-                                <td>pve</td>
-                                <td>1800</td>
-                                <td>IN A</td>
-                                <td>192.168.4.35</td>
-                            </tr>
-                            <tr>
-                                <td>pve</td>
-                                <td>-</td>
-                                <td>IN AAAA</td>
-                                <td>2001:7c7:1906:104::4:35</td>
-                            </tr>
-                            <tr>
-                                <td>fw</td>
-                                <td>-</td>
-                                <td>CNAME</td>
-                                <td>fs2B1.r414.hhs.karlsruhe.de.</td>
-                            </tr>
-                            <tr>
-                                <td>www</td>
-                                <td>-</td>
-                                <td>CNAME</td>
-                                <td>fw</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </section>
 
@@ -526,7 +417,6 @@
                         <span class="badge">🔒 OPNsense</span>
                         <span class="badge">🐧 Debian 12 Netzinstallation</span>
                         <span class="badge">🐧 Debian 13 Netzinstallation</span>
-                        <span class="badge">🪟 Windows 11</span>
                     </div>
                 </div>
             </section>
