@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruppe B1 - Apache Webserver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .project-info {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            animation: slideIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .info-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .info-value {
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .highlight-box h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .highlight-box p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .dns-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dns-table th,
+        .dns-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .dns-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .dns-table tr:hover {
+            background: #e8eaf6;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px 5px 5px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            background: #e8eaf6;
+            transform: translateX(10px);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 120px;
+        }
+
+        .timeline-content {
+            flex: 1;
+            color: #555;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dns-table {
+                font-size: 0.85em;
+            }
+
+            .dns-table th,
+            .dns-table td {
+                padding: 8px;
+            }
+        }
+
+        .server-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="server-icon">🖥️</div>
+                <h1>Gruppe B1</h1>
+                <p class="subtitle">Apache Webserver Konfiguration</p>
+                <p class="project-info">Projekt E3FS2 2025/2026</p>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Webserver Information -->
+            <section class="section">
+                <h2>🌐 Webserver Information</h2>
+                <div class="highlight-box">
+                    <h3><span class="status-indicator"></span>Apache HTTP Server</h3>
+                    <p>Dieser Webserver läuft auf einem Apache HTTP Server in einer Proxmox-Umgebung. 
+                    Der Server ist Teil des Projekts E3FS2 2025/2026 und wird von Gruppe B1 verwaltet.</p>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Server Details</h3>
+                        <div class="info-item">
+                            <span class="info-label">Webserver:</span>
+                            <span class="info-value">Apache HTTP Server</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gruppe:</span>
+                            <span class="info-value">B1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Projekt:</span>
+                            <span class="info-value">E3FS2 2025/2026</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Virtualisierung:</span>
+                            <span class="info-value">Proxmox VE</span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Betriebssystem</h3>
+                        <div class="info-item">
+                            <span class="info-label">OS:</span>
+                            <span class="info-value">Debian 12/13</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Alternative:</span>
+                            <span class="info-value">OPNsense</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Weitere Option:</span>
+                            <span class="info-value">Windows 11</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Netzwerkkonfiguration -->
+            <section class="section">
+                <h2>🔧 Netzwerkkonfiguration</h2>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>IPv4 Adressen</h3>
+                        <div class="info-item">
+                            <span class="info-label">Proxmox:</span>
+                            <span class="info-value">192.168.4.35/23</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Firewall:</span>
+                            <span class="info-value">192.168.4.45/23</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gateway:</span>
+                            <span class="info-value">192.168.4.1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Nameserver:</span>
+                            <span class="info-value">192.168.4.1</span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>IPv6 Adressen</h3>
+                        <div class="info-item">
+                            <span class="info-label">Proxmox:</span>
+                            <span class="info-value">2001:7c7:1906:104::4:35/64</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Firewall:</span>
+                            <span class="info-value">2001:7c7:1906:104::4:45/64</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gateway:</span>
+                            <span class="info-value">2001:7c7:1906:104::1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Nameserver:</span>
+                            <span class="info-value">2001:7c7:1906:104::1</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DNS Konfiguration -->
+            <section class="section">
+                <h2>🌍 DNS-Einträge</h2>
+                <div class="info-card">
+                    <h3>DNS Server: fs2B1.r414.hhs.karlsruhe.de</h3>
+                    <p style="color: #666; margin-bottom: 15px;">$ORIGIN fs2B1.r414.hhs.karlsruhe.de. | $TTL 3600</p>
+                    
+                    <table class="dns-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>TTL</th>
+                                <th>Typ</th>
+                                <th>Wert</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@</td>
+                                <td>-</td>
+                                <td>IN A</td>
+                                <td>192.168.4.45</td>
+                            </tr>
+                            <tr>
+                                <td>@</td>
+                                <td>-</td>
+                                <td>IN AAAA</td>
+                                <td>2001:7c7:1906:104::4:45</td>
+                            </tr>
+                            <tr>
+                                <td>pve</td>
+                                <td>1800</td>
+                                <td>IN A</td>
+                                <td>192.168.4.35</td>
+                            </tr>
+                            <tr>
+                                <td>pve</td>
+                                <td>-</td>
+                                <td>IN AAAA</td>
+                                <td>2001:7c7:1906:104::4:35</td>
+                            </tr>
+                            <tr>
+                                <td>fw</td>
+                                <td>-</td>
+                                <td>CNAME</td>
+                                <td>fs2B1.r414.hhs.karlsruhe.de.</td>
+                            </tr>
+                            <tr>
+                                <td>www</td>
+                                <td>-</td>
+                                <td>CNAME</td>
+                                <td>fw</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Proxmox Administration -->
+            <section class="section">
+                <h2>🔐 Proxmox Administration</h2>
+                <div class="info-card">
+                    <h3>Zugriff auf Proxmox VE</h3>
+                    <div class="info-item">
+                        <span class="info-label">URL:</span>
+                        <span class="info-value">https://pve.fs2B1.r414.hhs.karlsruhe.de:8006</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Protokoll:</span>
+                        <span class="info-value">HTTPS (Port 8006)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Benutzer:</span>
+                        <span class="info-value">root</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Zugriff Schule:</span>
+                        <span class="info-value">IPv4 und IPv6</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Zugriff Extern:</span>
+                        <span class="info-value">Nur IPv6</span>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 20px;">
+                    <h3>📌 Hinweis zur Sicherheit</h3>
+                    <p>Der Proxmox-Server ist mit jedem Browser über HTTPS und Port 8006 erreichbar. 
+                    In der Schule ist der Zugriff sowohl über IPv4 als auch IPv6 möglich. 
+                    Von extern ist ausschließlich der Zugriff über IPv6 gestattet.</p>
+                </div>
+            </section>
+
+            <!-- Verfügbare ISOs -->
+            <section class="section">
+                <h2>💿 Verfügbare ISO-Images</h2>
+                <div class="info-card">
+                    <h3>Installationsmedien für VMs</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Folgende ISO-Images stehen für die Installation von virtuellen Maschinen zur Verfügung:</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <span class="badge">🔒 OPNsense</span>
+                        <span class="badge">🐧 Debian 12 Netzinstallation</span>
+                        <span class="badge">🐧 Debian 13 Netzinstallation</span>
+                        <span class="badge">🪟 Windows 11</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Zeitplanung -->
+            <section class="section">
+                <h2>📅 Projektzeitplan</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-date">17.11.2025</span>
+                        <span class="timeline-content">Projektstart</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">24.11.2025</span>
+                        <span class="timeline-content">Abgabe Dokumentation</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">25.11.2025</span>
+                        <span class="timeline-content">Projektabnahme</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>Gruppe B1 - Projekt E3FS2 2025/2026</strong></p>
+            <p>Apache HTTP Server auf Proxmox VE</p>
+            <p style="margin-top: 15px; opacity: 0.8;">KKA Bildungszentrum • fs2B1.r414.hhs.karlsruhe.de</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dynamisches Datum und Uhrzeit
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeStr = now.toLocaleString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Optional: Könnte in einem Element angezeigt werden
+            // document.getElementById('currentTime').textContent = dateTimeStr;
+        }
+
+        // Smooth Scroll für interne Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Animation beim Scrollen
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Initialisierung
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
